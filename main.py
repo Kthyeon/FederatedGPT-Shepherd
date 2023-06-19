@@ -1,4 +1,16 @@
+import sys
 import os
+
+import requests
+import urllib3
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
+
+# Disable the InsecureRequestWarning
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+# Send the HTTPS request with certificate verification
+response = requests.get('https://huggingface.co', verify=True)
+
 from typing import List
 from tqdm import tqdm
 import fire
@@ -12,15 +24,16 @@ from peft import (
 from fed_utils import FedAvg, client_selection, global_evaluation, GeneralClient
 import datasets
 from utils.prompter import Prompter
+from accelerate import infer_auto_device_map
 
 datasets.utils.logging.set_verbosity_error()
-
 
 def fl_finetune(
         # model/data params
         global_model: str = '',
         data_path: str = './data',
         output_dir: str = './lora-shepherd/',
+        device_map: str = 'auto', # set 'auto' if you want to use all available gpus
         # FL hyperparamas
         client_selection_strategy: str = 'random',
         client_selection_frac: float = 0.1,
@@ -77,13 +90,14 @@ def fl_finetune(
         global_model
     ), "Please specify a --global_model, e.g. --global_modell='decapoda-research/llama-7b-hf'"
 
+
     data_path = os.path.join(data_path, str(num_clients))
     assert (os.path.exists(data_path), "Please generate the data files for each client")
 
     # set up the global model & toknizer
     gradient_accumulation_steps = local_batch_size // local_micro_batch_size
     prompter = Prompter(prompt_template_name)
-    device_map = "auto"
+    # device_map = "auto" # use all available GPUs
     world_size = int(os.environ.get("WORLD_SIZE", 1))
     ddp = world_size != 1
     if ddp:
@@ -95,6 +109,7 @@ def fl_finetune(
         load_in_8bit=True,
         torch_dtype=torch.float16,
         device_map=device_map,
+        max_memory={0: "24GB", 1: "24GB", 2: "24GB", 3: "24GB"}
     )
 
     tokenizer = LlamaTokenizer.from_pretrained(global_model)
@@ -169,7 +184,6 @@ def fl_finetune(
         print("\nConducting the client selection")
         selected_clients_set = client_selection(num_clients, client_selection_frac, client_selection_strategy,
                                                 other_info=epoch)
-
         for client_id in selected_clients_set:
             client = GeneralClient(client_id, model, data_path, output_dir)
 

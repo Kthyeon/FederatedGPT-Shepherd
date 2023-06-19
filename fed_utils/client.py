@@ -61,7 +61,7 @@ class GeneralClient:
             load_best_model_at_end=True if self.local_val_set_size > 0 else False,
             ddp_find_unused_parameters=False if ddp else None,
             group_by_length=group_by_length,
-            dataloader_drop_last=False
+            dataloader_drop_last=False,
         )
         self.local_trainer = transformers.Trainer(model=self.model,
                                                   train_dataset=self.local_train_dataset,
