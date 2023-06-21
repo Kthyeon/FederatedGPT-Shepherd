@@ -4,7 +4,7 @@
 # pip install -r requirements.txt
 
 # Data_preparation
-num_client=4 # The number of clients
+num_client=8 # The number of clients
 diff_quantity=0 # Whether clients have different amounts of data
 num_shards_per_clients=1 
 python client_data_allocation.py $num_client $diff_quantity $num_shards_per_clients
@@ -30,6 +30,7 @@ python client_data_allocation.py $num_client $diff_quantity $num_shards_per_clie
 
 
 ##### Example 5 with four clients
+# python client_data_allocation.py 4 0 1
 #  Generating the local training dataset of Client_0
 # category
 # classification    1976
@@ -56,3 +57,37 @@ python client_data_allocation.py $num_client $diff_quantity $num_shards_per_clie
 # creative_writing     701
 # classification       150
 # Name: count, dtype: int64 ['classification' 'closed_qa' 'creative_writing' 'general_qa'] 3734
+
+##### Example 3 with eight clients
+# python client_data_allocation.py 8 0 1
+#  Generating the local training dataset of Client_0
+# brainstorming    1758
+# Name: category, dtype: int64 ['brainstorming'] 1758
+
+#  Generating the local training dataset of Client_1
+# classification    2126
+# Name: category, dtype: int64 ['classification'] 2126
+
+#  Generating the local training dataset of Client_2
+# closed_qa    1813
+# Name: category, dtype: int64 ['closed_qa'] 1813
+
+#  Generating the local training dataset of Client_3
+# creative_writing    701
+# Name: category, dtype: int64 ['creative_writing'] 701
+
+#  Generating the local training dataset of Client_4
+# general_qa    2181
+# Name: category, dtype: int64 ['general_qa'] 2181
+
+#  Generating the local training dataset of Client_5
+# information_extraction    1502
+# Name: category, dtype: int64 ['information_extraction'] 1502
+
+#  Generating the local training dataset of Client_6
+# open_qa    3601
+# Name: category, dtype: int64 ['open_qa'] 3601
+
+#  Generating the local training dataset of Client_7
+# summarization    1253
+# Name: category, dtype: int64 ['summarization'] 1253

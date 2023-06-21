@@ -67,7 +67,19 @@ if diff_quantity:
 
         print(min_size)
 
+elif num_clients == 8:
+    # one task per each client
+    # assert if num_clients != number of categories != 8
+    remaining_df_index = remaining_df.index.values
+    category_uniques = remaining_df['category'].unique().tolist()
+    assert len(category_uniques) == 8
+    assert num_clients == len(category_uniques)
 
+    idx_partition = []
+    for k in range(len(category_uniques)):
+        category_rows_k = remaining_df.loc[remaining_df['category'] == category_uniques[k]]
+        category_rows_k_index = category_rows_k.index.values
+        idx_partition.append(category_rows_k_index.tolist())
 else:
     # The number of data points in each client's local training dataset is the same
     remaining_df_index = remaining_df.index.values
