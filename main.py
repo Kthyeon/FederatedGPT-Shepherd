@@ -21,7 +21,7 @@ from peft import (
     get_peft_model,
     prepare_model_for_int8_training,
 )
-from fed_utils import FedAvg, client_selection, global_evaluation, GeneralClient
+from fed_utils import FedSiRA, FedAvg, client_selection, global_evaluation, GeneralClient
 import datasets
 from utils.prompter import Prompter
 from accelerate import infer_auto_device_map
@@ -59,6 +59,7 @@ def fl_finetune(
         group_by_length: bool = False,
         resume_from_checkpoint: str = None,  # either training checkpoint or final adapter
         prompt_template_name: str = "alpaca",  # The prompt template to use, will default to alpaca.
+        aggregator: str = "fedavg",
 ):
     if int(os.environ.get("LOCAL_RANK", 0)) == 0:
         print(
@@ -96,7 +97,10 @@ def fl_finetune(
 
     # set up the global model & toknizer
     gradient_accumulation_steps = local_batch_size // local_micro_batch_size
+
+    # prompter for generating prompts from *.json files
     prompter = Prompter(prompt_template_name)
+
     # device_map = "auto" # use all available GPUs
     world_size = int(os.environ.get("WORLD_SIZE", 1))
     ddp = world_size != 1
@@ -104,6 +108,7 @@ def fl_finetune(
         device_map = {"": int(os.environ.get("LOCAL_RANK") or 0)}
         gradient_accumulation_steps = gradient_accumulation_steps // world_size
 
+    # set up the global model & toknizer
     model = LlamaForCausalLM.from_pretrained(
         global_model,
         load_in_8bit=True,
@@ -139,6 +144,10 @@ def fl_finetune(
         return result
 
     def generate_and_tokenize_prompt(data_point):
+        '''
+        Description:   
+        '''
+
         full_prompt = prompter.generate_prompt(
             data_point["instruction"],
             data_point["context"],
@@ -209,12 +218,20 @@ def fl_finetune(
             del client
 
         print("Collecting the weights of clients and performing aggregation")
-        model = FedAvg(model,
-                       selected_clients_set,
-                       output_dir,
-                       local_dataset_len_dict,
-                       epoch,
-                       )
+        if aggregator == 'fedavg':
+            model = FedAvg(model,
+                        selected_clients_set,
+                        output_dir,
+                        local_dataset_len_dict,
+                        epoch,
+                        )
+        elif aggregator == 'fedsira':
+            model = FedSiRA(model,
+                        selected_clients_set,
+                        output_dir,
+                        local_dataset_len_dict,
+                        epoch,
+                        )
         torch.save(model.state_dict(), os.path.join(output_dir, str(epoch), "adapter_model.bin"))
         config.save_pretrained(output_dir)
 

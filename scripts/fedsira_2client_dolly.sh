@@ -1,7 +1,7 @@
 # all for lora
 python main.py --global_model 'chavinlo/alpaca-native'\
       --data_path  "./data" \
-      --output_dir  './lora-shepherd-7b-all-r8-svdaggregate/'\
+      --output_dir  './lora-shepherd-7b-all-r8-fedsira/'\
       --device_map 'auto' \
       --num_communication_rounds 20 \
       --num_clients  2 \
@@ -13,12 +13,13 @@ python main.py --global_model 'chavinlo/alpaca-native'\
       --lora_r 8 \
       --lora_target_modules='[q_proj,k_proj,v_proj,o_proj]' \
       --train_on_inputs \
-      --group_by_length
+      --group_by_length \
+      --aggregator "fedsira"
 
 # all for lora
 python main.py --global_model 'chavinlo/alpaca-native'\
       --data_path  "./data" \
-      --output_dir  './lora-shepherd-7b-q-r8-svdaggregate/'\
+      --output_dir  './lora-shepherd-7b-q-r8-fedsira/'\
       --device_map 'auto' \
       --num_communication_rounds 20 \
       --num_clients  2 \
@@ -30,12 +31,14 @@ python main.py --global_model 'chavinlo/alpaca-native'\
       --lora_r 8 \
       --lora_target_modules='[q_proj]' \
       --train_on_inputs \
-      --group_by_length 
+      --group_by_length \
+      --aggregator "fedsira"
+ 
 
 # all for lora
 python main.py --global_model 'chavinlo/alpaca-native'\
       --data_path  "./data" \
-      --output_dir  './lora-shepherd-7b-k-r8-svdaggregate/'\
+      --output_dir  './lora-shepherd-7b-k-r8-fedsira/'\
       --device_map 'auto' \
       --num_communication_rounds 20 \
       --num_clients  2 \
@@ -47,12 +50,13 @@ python main.py --global_model 'chavinlo/alpaca-native'\
       --lora_r 8 \
       --lora_target_modules='[k_proj]' \
       --train_on_inputs \
-      --group_by_length 
+      --group_by_length \
+      --aggregator "fedsira"
 
 # all for lora
 python main.py --global_model 'chavinlo/alpaca-native'\
       --data_path  "./data" \
-      --output_dir  './lora-shepherd-7b-v-r8-svdaggregate/'\
+      --output_dir  './lora-shepherd-7b-v-r8-fedsira/'\
       --device_map 'auto' \
       --num_communication_rounds 20 \
       --num_clients  2 \
@@ -64,12 +68,13 @@ python main.py --global_model 'chavinlo/alpaca-native'\
       --lora_r 8 \
       --lora_target_modules='[v_proj]' \
       --train_on_inputs \
-      --group_by_length 
+      --group_by_length \
+      --aggregator "fedsira"
 
 # all for lora
 python main.py --global_model 'chavinlo/alpaca-native'\
       --data_path  "./data" \
-      --output_dir  './lora-shepherd-7b-o-r8-svdaggregate/'\
+      --output_dir  './lora-shepherd-7b-o-r8-fedsira/'\
       --device_map 'auto' \
       --num_communication_rounds 20 \
       --num_clients  2 \
@@ -81,4 +86,5 @@ python main.py --global_model 'chavinlo/alpaca-native'\
       --lora_r 8 \
       --lora_target_modules='[o_proj]' \
       --train_on_inputs \
-      --group_by_length  
+      --group_by_length  \
+      --aggregator "fedsira"

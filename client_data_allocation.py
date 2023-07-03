@@ -10,8 +10,8 @@ num_clients = int(sys.argv[1])
 diff_quantity = int(sys.argv[2])
 num_shards_per_clients = int(sys.argv[3])
 
-np.random.seed(20234)
-random.seed(20234)
+np.random.seed(2023)
+random.seed(2023)
 
 # Divide the entire dataset into a training set and a test set.
 df = pd.read_json("new-databricks-dolly-15k.json", orient='records')
