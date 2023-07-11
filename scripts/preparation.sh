@@ -4,7 +4,7 @@
 # pip install -r requirements.txt
 
 # Data_preparation
-num_client=8 # The number of clients
+num_client=1 # The number of clients
 diff_quantity=0 # Whether clients have different amounts of data
 num_shards_per_clients=1 
 python client_data_allocation.py $num_client $diff_quantity $num_shards_per_clients
