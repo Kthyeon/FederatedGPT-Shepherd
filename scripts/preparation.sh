@@ -3,6 +3,10 @@
 # pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113
 # pip install -r requirements.txt
 
+# change the permission to access
+# sudo chown -R taehyeon:taehyeon /data/taehyeon/.cache/
+
+
 # Data_preparation
 num_client=1 # The number of clients
 diff_quantity=0 # Whether clients have different amounts of data
